@@ -7,6 +7,7 @@ public class SaleMapper {
     public static Sales fromDTO(SalesDTO dto) {
         Sales entity = new Sales();
         entity.setDishIdentifier(dto.getDishIdentifier());
+        entity.setSalesPoint(dto.getSalesPoint());
         entity.setDish(dto.getDishName());
         entity.setQuantitySold(dto.getQuantitySold());
         entity.setUnitPrice(dto.getUnitPrice());

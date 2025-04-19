@@ -25,8 +25,8 @@ public class SynchronizationService {
     private final ProcessingTimesCrudOperations processingTimesCrudOperations;
 
     private final Map<String, String> salesPoints = Map.of(
-            "http://localhost:8081", "Analamahintsy",
-            "http://localhost:8082", "Antanimena"
+            "http://192.168.43.249:8081", "Analamahintsy",
+            "http://192.168.43.249:8082", "Antanimena"
     );
 
     public void synchronizeData() {
@@ -36,15 +36,19 @@ public class SynchronizationService {
 
             List<SalesDTO> sales = apiClient.fetchSales(baseUrl);
             List<Sales> saleEntities = sales.stream()
-                    .peek(s -> s.setSalesPoint(name))
-                    .map(SaleMapper::fromDTO)
+                    .map(s -> {
+                        s.setSalesPoint(name);
+                        return SaleMapper.fromDTO(s);
+                    })
                     .collect(Collectors.toList());
             salesCrudOperations.saveAll(saleEntities);
 
             List<BestProcessingTimeDTO> preps = apiClient.fetchPreparations(baseUrl);
             List<BestProcessingTimes> prepEntities = preps.stream()
-                    .peek(p -> p.setSalesPoint(name))
-                    .map(ProcessingTimeMapper::fromDTO)
+                    .map(s -> {
+                        s.setSalesPoint(name);
+                        return ProcessingTimeMapper.fromDTO(s);
+                    })
                     .collect(Collectors.toList());
             processingTimesCrudOperations.saveAll(prepEntities);
         }

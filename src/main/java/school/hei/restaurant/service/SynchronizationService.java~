@@ -25,28 +25,36 @@ public class SynchronizationService {
     private final ProcessingTimesCrudOperations processingTimesCrudOperations;
 
     private final Map<String, String> salesPoints = Map.of(
-            "http://localhost:8080", "Analamahintsy",
-            "http://localhost:8081", "Antanimena"
+            "http://192.168.43.249:8081", "Analamahintsy",
+            "http://192.168.43.249:8082", "Antanimena"
     );
 
     public void synchronizeData() {
         for (var entry : salesPoints.entrySet()) {
             String baseUrl = entry.getKey();
             String name = entry.getValue();
+            System.out.println("Name: " + name);
 
             List<SalesDTO> sales = apiClient.fetchSales(baseUrl);
             List<Sales> saleEntities = sales.stream()
-                    .peek(s -> s.setSalesPoint(name))
-                    .map(SaleMapper::fromDTO)
+                    .map(s -> {
+                        s.setSalesPoint(name);
+                        System.out.println("s: " + s);
+                        return SaleMapper.fromDTO(s);
+                    })
                     .collect(Collectors.toList());
             salesCrudOperations.saveAll(saleEntities);
+            System.out.println("Sales : " + saleEntities);
 
             List<BestProcessingTimeDTO> preps = apiClient.fetchPreparations(baseUrl);
             List<BestProcessingTimes> prepEntities = preps.stream()
-                    .peek(p -> p.setSalesPoint(name))
-                    .map(ProcessingTimeMapper::fromDTO)
+                    .map(s -> {
+                        s.setSalesPoint(name);
+                        return ProcessingTimeMapper.fromDTO(s);
+                    })
                     .collect(Collectors.toList());
             processingTimesCrudOperations.saveAll(prepEntities);
+            System.out.println("Preps : " + prepEntities);
         }
     }
 }
