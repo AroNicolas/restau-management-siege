@@ -23,7 +23,7 @@ public class ProcessingTimesCrudOperations {
 
     @SneakyThrows
     public List<ProcessingTimes> getBestProcessingTime(
-            long dishId,
+            Long dishId,
             Integer top,
             String unit,
             String mode
