@@ -1,0 +1,8 @@
+CREATE TABLE sales (
+  id BIGSERIAL PRIMARY KEY,
+  sales_point_id BIGINT REFERENCES sales_point(id),
+  dish_id BIGINT REFERENCES dish(id),
+  quantity_sold BIGINT NOT NULL,
+  unit_price DECIMAL(10, 2) NOT NULL,
+  synchronized_at TIMESTAMP NOT NULL DEFAULT NOW()
+);

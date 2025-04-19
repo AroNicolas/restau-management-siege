@@ -1,0 +1,4 @@
+package school.hei.restaurant.endpoints.rest;
+
+public class BestSalesMapper {
+}
