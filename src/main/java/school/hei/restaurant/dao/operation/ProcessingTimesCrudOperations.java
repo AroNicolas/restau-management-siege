@@ -82,16 +82,17 @@ public class ProcessingTimesCrudOperations {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement =
                          connection.prepareStatement("""
-                                 INSERT INTO processing_time (dish_identifier, sales_point, dish_name, started_at, finished_at)
-                                 VALUES (?, ?, ?, ?, ?)
+                                 INSERT INTO processing_time (dish_identifier, sales_point, dish_name, quantity, started_at, finished_at)
+                                 VALUES (?, ?, ?, ?, ?, ?)
                                  """)) {
                 prepEntities.forEach(entityToSave -> {
                     try {
                         statement.setLong(1, entityToSave.getDishIdentifier());
                         statement.setString(2, entityToSave.getSalesPoint());
                         statement.setString(3, entityToSave.getDish());
-                        statement.setTimestamp(4, Timestamp.from(entityToSave.getStartedAt()));
-                        statement.setTimestamp(5, Timestamp.from(entityToSave.getFinishedAt()));
+                        statement.setDouble(4, entityToSave.getQuantity());
+                        statement.setTimestamp(5, Timestamp.from(entityToSave.getStartedAt()));
+                        statement.setTimestamp(6, Timestamp.from(entityToSave.getFinishedAt()));
                         statement.addBatch(); // group by batch so executed as one query in database
                     } catch (SQLException e) {
                         throw new ServerException(e);
