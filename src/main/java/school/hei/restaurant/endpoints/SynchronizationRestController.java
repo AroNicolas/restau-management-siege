@@ -11,7 +11,7 @@ import school.hei.restaurant.service.exception.ServerException;
 public class SynchronizationRestController {
     private final SynchronizationService synchronizationService;
 
-    @PostMapping("/synchronize")
+    @PostMapping("/synchronization")
     public ResponseEntity<Object> synchronizeDatabase() {
         try {
             synchronizationService.synchronizeData();
