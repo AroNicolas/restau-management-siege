@@ -5,5 +5,5 @@ CREATE TABLE best_sales (
   sales_point VARCHAR(255),
   dish_name VARCHAR(255),
   quantity_sold BIGINT,
-  total_amount DECIMAL(10, 2),
+  total_amount DECIMAL(10, 2)
 );

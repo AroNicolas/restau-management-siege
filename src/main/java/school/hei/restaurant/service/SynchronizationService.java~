@@ -25,8 +25,8 @@ public class SynchronizationService {
     private final ProcessingTimesCrudOperations processingTimesCrudOperations;
 
     private final Map<String, String> salesPoints = Map.of(
-            "http://localhost:8081", "Analamahintsy",
-            "http://localhost:8082", "Antanimena"
+            "http://localhost:8080", "Analamahintsy",
+            "http://localhost:8081", "Antanimena"
     );
 
     public void synchronizeData() {
