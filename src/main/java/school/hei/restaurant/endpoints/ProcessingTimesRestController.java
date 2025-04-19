@@ -21,7 +21,7 @@ public class ProcessingTimesRestController {
     private final ProcessingTimesService processingTimesService;
     private final ProcessingTimesRestMapper processingTimesRestMapper;
 
-    @GetMapping("/dishes/{id}/processingTime")
+    @GetMapping("/dishes/{id}/bestProcessingTime")
     public ResponseEntity<Object> getProcessingTime(@PathVariable Long id,
                                                     @RequestParam(required = false) int top,
                                                     @RequestParam(required = false, defaultValue = "SECONDS") String durationUnit,

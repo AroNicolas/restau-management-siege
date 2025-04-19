@@ -12,6 +12,7 @@ import school.hei.restaurant.model.ProcessingTimes;
 import school.hei.restaurant.service.ProcessingTimesService;
 import school.hei.restaurant.service.exception.ServerException;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -33,6 +34,8 @@ public class ProcessingTimesRestController {
             return ResponseEntity.ok().body(processingTimesRests);
         } catch (ServerException e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
