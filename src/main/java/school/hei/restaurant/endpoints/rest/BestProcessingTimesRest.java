@@ -11,6 +11,6 @@ import java.time.Duration;
 public class BestProcessingTimesRest {
     private String salesPoint;
     private String dish;
-    private Duration preparationDuration;
+    private Double preparationDuration;
     private DurationUnit durationUnit;
 }

@@ -17,7 +17,7 @@ public class BestProcessingTimes {
     private String salesPoint;
     private String dish;
     private Double quantity;
-    private Duration preparationDuration;
+    private Double preparationDuration;
     private DurationUnit durationUnit;
     private Instant startedAt;
     private Instant finishedAt;

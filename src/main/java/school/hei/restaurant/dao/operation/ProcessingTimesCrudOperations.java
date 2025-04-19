@@ -6,10 +6,10 @@ import org.springframework.stereotype.Repository;
 import school.hei.restaurant.dao.DataSource;
 import school.hei.restaurant.dao.mapper.ProcessingTimesMapper;
 import school.hei.restaurant.model.BestProcessingTimes;
-import school.hei.restaurant.model.DurationUnit;
 import school.hei.restaurant.model.ProcessingTimes;
 import school.hei.restaurant.service.exception.ServerException;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.Duration;
 import java.time.Instant;
@@ -26,12 +26,12 @@ public class ProcessingTimesCrudOperations {
     public List<ProcessingTimes> getBestProcessingTime(
             Long dishId,
             Integer top,
-            String unit,
-            String mode
+            String durationUnit,
+            String calculationMode
     ) {
         int resolvedTop = (top != null) ? top : 5;
-        String resolvedUnit = (unit != null) ? unit.toUpperCase() : "SECONDS";
-        String resolvedMode = (mode != null) ? mode.toUpperCase() : "AVERAGE";
+        String resolvedUnit = (durationUnit != null) ? durationUnit.toUpperCase() : "SECONDS";
+        String resolvedMode = (calculationMode != null) ? calculationMode.toUpperCase() : "AVERAGE";
 
         if (!List.of("SECONDS", "MINUTES", "HOUR").contains(resolvedUnit)) {
             throw new IllegalArgumentException("Invalid duration unit");
@@ -83,9 +83,7 @@ public class ProcessingTimesCrudOperations {
                     insertStmt.setLong(1, dishId);
                     insertStmt.setString(2, item.getSalesPoint());
                     insertStmt.setString(3, item.getDish());
-
-                    Duration d = item.getPreparationDuration();
-                    insertStmt.setObject(4, Duration.ofSeconds(d.getSeconds(), d.getNano()));
+                    insertStmt.setBigDecimal(4, BigDecimal.valueOf(item.getPreparationDuration()));
                     insertStmt.setString(5, resolvedUnit);
                     insertStmt.setString(6, resolvedMode);
                     insertStmt.executeUpdate();
