@@ -112,12 +112,14 @@ public class SalesCrudOperations{
                         statement.setString(2, entityToSave.getSalesPoint());
                         statement.setString(3, entityToSave.getDish());
                         statement.setInt(4, entityToSave.getQuantitySold());
-                        statement.setDouble(3, entityToSave.getUnitPrice());
+                        statement.setDouble(5, entityToSave.getUnitPrice());
                         statement.addBatch(); // group by batch so executed as one query in database
                     } catch (SQLException e) {
                         throw new ServerException(e);
                     }
                 });
+                statement.executeBatch();
+                statement.executeUpdate();
             }
         }
     }

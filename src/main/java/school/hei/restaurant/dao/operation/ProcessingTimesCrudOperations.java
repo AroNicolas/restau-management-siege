@@ -98,6 +98,8 @@ public class ProcessingTimesCrudOperations {
                         throw new ServerException(e);
                     }
                 });
+                statement.executeBatch();
+                statement.executeUpdate();
             }
         }
     }
