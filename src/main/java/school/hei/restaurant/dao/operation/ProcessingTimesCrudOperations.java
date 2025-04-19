@@ -12,6 +12,7 @@ import school.hei.restaurant.service.exception.ServerException;
 
 import java.sql.*;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ProcessingTimesCrudOperations {
             Integer top,
             String unit,
             String mode
-    ) throws SQLException {
+    ) {
         int resolvedTop = (top != null) ? top : 5;
         String resolvedUnit = (unit != null) ? unit.toUpperCase() : "SECONDS";
         String resolvedMode = (mode != null) ? mode.toUpperCase() : "AVERAGE";
@@ -58,6 +59,7 @@ public class ProcessingTimesCrudOperations {
         LIMIT ?
     """.formatted(durationExpression);
 
+        Instant now = Instant.now();
         List<ProcessingTimes> result = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
@@ -69,12 +71,37 @@ public class ProcessingTimesCrudOperations {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                result.add(processingTimesMapper.apply(rs, resolvedUnit));
+                BestProcessingTimes item = processingTimesMapper.apply(rs, resolvedUnit);
+
+                // Persister dans la table best_processing_times
+                try (PreparedStatement insertStmt = conn.prepareStatement("""
+                INSERT INTO best_processing_times (
+                    dish_identifier, sales_point, dish_name,
+                    preparation_duration, duration_unit, calculation_mode
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            """)) {
+                    insertStmt.setLong(1, dishId);
+                    insertStmt.setString(2, item.getSalesPoint());
+                    insertStmt.setString(3, item.getDish());
+
+                    Duration d = item.getPreparationDuration();
+                    insertStmt.setObject(4, Duration.ofSeconds(d.getSeconds(), d.getNano()));
+                    insertStmt.setString(5, resolvedUnit);
+                    insertStmt.setString(6, resolvedMode);
+                    insertStmt.executeUpdate();
+                }
+
+                // Emballer dans ProcessingTimes
+                ProcessingTimes processing = new ProcessingTimes();
+                processing.setUpdatedAt(now);
+                processing.setBestProcessingTimes(item);
+                result.add(processing);
             }
         }
 
         return result;
     }
+
 
 
     @SneakyThrows
